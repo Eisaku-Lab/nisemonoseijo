@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ニセモノ聖女は運命をくつがえす - 第2話</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            z-index: 1000;
+            border-bottom: 1px solid #333;
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .title-wrapper {
+            text-align: center;
+        }
+
+        .title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            display: block;
+        }
+
+        .episode {
+            font-size: 12px;
+            color: #888;
+            margin-top: 2px;
+            display: block;
+        }
+
+        .comic-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding-top: 60px;
+            background-color: #000;
+        }
+
+        .page-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .comic-page {
+            width: 100%;
+            height: auto;
+            display: block;
+            background-color: #000;
+            opacity: 0;
+            transition: opacity 0.3s ease-in;
+        }
+
+        .comic-page.loaded {
+            opacity: 1;
+        }
+
+        .page-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #fff;
+            z-index: 999;
+            backdrop-filter: blur(10px);
+        }
+
+        .copyright {
+            font-weight: bold;
+            background-color: #ffffff;
+            padding: 30px 20px;
+            text-align: center;
+            font-size: 15px;
+            color: #a2a2a2;
+        }
+
+        .footer {
+            background-color: #ffffff;
+            padding: 30px 20px;
+            text-align: center;
+            border-top: 1px solid #ffffff;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+            margin-bottom: 50px;
+        }
+
+        .next-episode-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 15px 50px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .next-episode-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 0 10px;
+            }
+
+            .title {
+                font-size: 12px;
+            }
+
+            .episode {
+                font-size: 11px;
+            }
+
+            .page-indicator {
+                bottom: 15px;
+                font-size: 11px;
+                padding: 6px 12px;
+            }
+
+            .next-episode-btn {
+                padding: 12px 40px;
+                font-size: 14px;
+            }
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="title-wrapper">
+                <span class="title">ニセモノ聖女は運命をくつがえす</span>
+                <span class="episode">第2話</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="comic-container" id="comicContainer"></main>
+
+    <div class="copyright">
+        <p>©weavin</p>
+    </div>
+
+    <div class="page-indicator" id="pageIndicator">
+        ページ <span id="currentPage">1</span> / <span id="totalPages">0</span>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <a href="episode03.html" class="next-episode-btn">第3話を読む →</a>
+        </div>
+    </footer>
+
+    <script>
+        const comicPages = [
+            'images/episode02/niseijo_002_001.jpg',
+            'images/episode02/niseijo_002_002.jpg',
+            'images/episode02/niseijo_002_003.jpg',
+            'images/episode02/niseijo_002_004.jpg',
+            'images/episode02/niseijo_002_005.jpg',
+            'images/episode02/niseijo_002_006.jpg',
+            'images/episode02/niseijo_002_007.jpg',
+            'images/episode02/niseijo_002_008.jpg',
+            'images/episode02/niseijo_002_009.jpg',
+            'images/episode02/niseijo_002_010.jpg',
+            'images/episode02/niseijo_002_011.jpg',
+            'images/episode02/niseijo_002_012.jpg',
+            'images/episode02/niseijo_002_013.jpg',
+            'images/episode02/niseijo_002_014.jpg',
+            'images/episode02/niseijo_002_015.jpg',
+            'images/episode02/niseijo_002_016.jpg',
+            'images/episode02/niseijo_002_017.jpg',
+            'images/episode02/niseijo_002_018.jpg',
+            'images/episode02/niseijo_002_019.jpg',
+            'images/episode02/niseijo_002_020.jpg',
+            'images/episode02/niseijo_002_021.jpg',
+            'images/episode02/niseijo_002_022.jpg',
+            'images/episode02/niseijo_002_023.jpg',
+            'images/episode02/niseijo_002_024.jpg',
+            'images/episode02/niseijo_002_025.jpg',
+            'images/episode02/niseijo_002_026.jpg',
+            'images/episode02/niseijo_002_027.jpg',
+            'images/episode02/niseijo_002_028.jpg',
+            'images/episode02/niseijo_002_029.jpg',
+            'images/episode02/niseijo_002_030.jpg',
+            'images/episode02/niseijo_002_031.jpg',
+            'images/episode02/niseijo_002_032.jpg',
+            'images/episode02/niseijo_002_033.jpg',
+            'images/episode02/niseijo_002_034.jpg',
+            'images/episode02/niseijo_002_035.jpg',
+            'images/episode02/niseijo_002_036.jpg',
+            'images/episode02/niseijo_002_037.jpg',
+            'images/episode02/niseijo_002_038.jpg',
+            'images/episode02/niseijo_002_039.jpg',
+            'images/episode02/niseijo_002_040.jpg',
+            'images/episode02/niseijo_002_041.jpg',
+            'images/episode02/niseijo_002_042.jpg',
+            'images/episode02/niseijo_002_043.jpg',
+            'images/episode02/niseijo_002_044.jpg',
+            'images/episode02/niseijo_002_045.jpg',
+            'images/episode02/niseijo_002_046.jpg',
+            'images/episode02/niseijo_002_047.jpg',
+            'images/episode02/niseijo_002_048.jpg',
+            'images/episode02/niseijo_002_049.jpg',
+            'images/episode02/niseijo_002_050.jpg',
+            'images/episode02/niseijo_002_051.jpg',
+            'images/episode02/niseijo_002_052.jpg',
+            'images/episode02/niseijo_002_053.jpg',
+            'images/episode02/niseijo_002_054.jpg',
+            'images/episode02/niseijo_002_055.jpg',
+            'images/episode02/niseijo_002_056.jpg',
+            'images/episode02/niseijo_002_057.jpg',
+            'images/episode02/niseijo_002_058.jpg',
+            'images/episode02/niseijo_002_059.jpg',
+            'images/episode02/niseijo_002_060.jpg',
+            'images/episode02/niseijo_002_061.jpg',
+            'images/episode02/niseijo_002_062.jpg',
+            'images/episode02/niseijo_002_063.jpg',
+            'images/episode02/niseijo_002_064.jpg',
+            'images/episode02/niseijo_002_065.jpg',
+            'images/episode02/niseijo_002_066.jpg',
+            'images/episode02/niseijo_002_067.jpg',
+            'images/episode02/niseijo_002_068.jpg',
+            'images/episode02/niseijo_002_069.jpg',
+            'images/episode02/niseijo_002_070.jpg',
+            'images/episode02/niseijo_002_071.jpg',
+            'images/episode02/niseijo_002_072.jpg',
+            'images/episode02/niseijo_002_073.jpg',
+            'images/episode02/niseijo_002_074.jpg',
+            'images/episode02/niseijo_002_075.jpg',
+            'images/episode02/niseijo_002_076.jpg',
+            'images/episode02/niseijo_002_077.jpg',
+            'images/episode02/niseijo_002_078.jpg',
+            'images/episode02/niseijo_002_079.jpg',
+            'images/episode02/niseijo_002_080.jpg',
+            'images/episode02/niseijo_002_081.jpg',
+            'images/episode02/niseijo_002_082.jpg',
+            'images/episode02/niseijo_002_083.jpg',
+            'images/episode02/niseijo_002_084.jpg',
+            'images/episode02/niseijo_002_085.jpg',
+            'images/episode02/niseijo_002_086.jpg',
+            'images/episode02/niseijo_002_087.jpg',
+            'images/episode02/niseijo_002_088.jpg',
+            'images/episode02/niseijo_002_089.jpg',
+            'images/episode02/niseijo_002_090.jpg',
+            'images/episode02/niseijo_002_091.jpg',
+            'images/episode02/niseijo_002_092.jpg',
+            'images/episode02/niseijo_002_093.jpg',
+            'images/episode02/niseijo_002_094.jpg',
+            'images/episode02/niseijo_002_095.jpg',
+            'images/episode02/niseijo_002_096.jpg',
+            'images/episode02/niseijo_002_097.jpg',
+            'images/episode02/niseijo_002_098.jpg',
+            'images/episode02/niseijo_002_099.jpg',
+            'images/episode02/niseijo_002_100.jpg',
+            'images/episode02/niseijo_002_101.jpg',
+            'images/episode02/niseijo_002_102.jpg',
+            'images/episode02/niseijo_002_103.jpg',
+            'images/episode02/niseijo_002_104.jpg',
+            'images/episode02/niseijo_002_105.jpg',
+            'images/episode02/niseijo_002_106.jpg',
+            'images/episode02/niseijo_002_107.jpg',
+            'images/episode02/niseijo_002_108.jpg',
+            'images/episode02/niseijo_002_109.jpg',
+            'images/episode02/niseijo_002_110.jpg',
+            'images/episode02/niseijo_002_111.jpg',
+            'images/episode02/niseijo_002_112.jpg',
+            'images/episode02/niseijo_002_113.jpg',
+            'images/episode02/niseijo_002_114.jpg',
+            'images/episode02/niseijo_002_115.jpg',
+            'images/episode02/niseijo_002_116.jpg',
+            'images/episode02/niseijo_002_117.jpg',
+            'images/episode02/niseijo_002_118.jpg',
+            'images/episode02/niseijo_002_119.jpg',
+            'images/episode02/niseijo_002_120.jpg',
+            'images/episode02/niseijo_002_121.jpg',
+            'images/episode02/niseijo_002_122.jpg',
+            'images/episode02/niseijo_002_123.jpg',
+            'images/episode02/niseijo_002_124.jpg',
+            'images/episode02/niseijo_002_125.jpg',
+            'images/episode02/niseijo_002_126.jpg',
+        ];
+
+        const comicContainer = document.getElementById('comicContainer');
+        const currentPageEl = document.getElementById('currentPage');
+        const totalPagesEl = document.getElementById('totalPages');
+
+        totalPagesEl.textContent = comicPages.length;
+
+        comicPages.forEach((imagePath, index) => {
+            const pageWrapper = document.createElement('div');
+            pageWrapper.className = 'page-wrapper';
+            pageWrapper.dataset.page = index + 1;
+
+            const img = document.createElement('img');
+            img.className = 'comic-page';
+            img.dataset.src = imagePath;
+            img.alt = `ページ ${index + 1}`;
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src;
+                        img.onload = () => {
+                            img.classList.add('loaded');
+                        };
+                        observer.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '50px'
+            });
+
+            observer.observe(img);
+
+            pageWrapper.appendChild(img);
+            comicContainer.appendChild(pageWrapper);
+        });
+
+        let ticking = false;
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    updatePageIndicator();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+
+        function updatePageIndicator() {
+            const scrollPosition = window.scrollY + window.innerHeight / 2;
+            const pages = document.querySelectorAll('.page-wrapper');
+
+            pages.forEach((page, index) => {
+                const pageTop = page.offsetTop;
+                const pageBottom = pageTop + page.offsetHeight;
+
+                if (scrollPosition >= pageTop && scrollPosition < pageBottom) {
+                    currentPageEl.textContent = index + 1;
+                }
+            });
+        }
+
+        updatePageIndicator();
+
+        document.addEventListener('keydown', (e) => {
+            const scrollAmount = window.innerHeight * 0.8;
+
+            if (e.key === 'ArrowDown' || e.key === ' ') {
+                e.preventDefault();
+                window.scrollBy({ top: scrollAmount, behavior: 'smooth' });
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                window.scrollBy({ top: -scrollAmount, behavior: 'smooth' });
+            }
+        });
+    </script>
+</body>
+
+</html>
